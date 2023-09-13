@@ -15,7 +15,6 @@ public class CharactersServiceImpl implements CharactersService {
 
     @Override
     public Integer getCountCharacter(String text, Character character) {
-
         return countCharacters(text).get(character);
     }
 

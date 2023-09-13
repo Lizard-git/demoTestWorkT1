@@ -15,7 +15,7 @@ public interface CharactersService {
      * This method gets the number of occurrences of one character in the text
      * @param text text in which we want to count the number of each character
      * @param character symbol whose quantity we want to know
-     * @return Number of occurrences of a character in the text (Integer)
+     * @return Number of occurrences of a character in the text (Integer) or null if the character is not found
      */
     Integer getCountCharacter(String text, Character character);
 }
