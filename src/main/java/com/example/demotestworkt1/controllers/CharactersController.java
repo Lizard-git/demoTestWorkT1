@@ -1,29 +1,47 @@
 package com.example.demotestworkt1.controllers;
 
-import com.example.demotestworkt1.model.CountCharactersObject;
+import com.example.demotestworkt1.service.CharactersService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+@Validated
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/")
 public class CharactersController {
 
-    @PostMapping("/string/characters/get/count")
-    public ResponseEntity<List<CountCharactersObject>> getCountCharacters(@RequestParam(value = "text") String text) {
-        CountCharactersObject objectOne = CountCharactersObject.builder().character("a").count((short) 2).build();
-        CountCharactersObject objectTwo = CountCharactersObject.builder().character("a").count((short) 4).build();
-        List<CountCharactersObject> result = new ArrayList<>();
-        result.add(objectOne);
-        result.add(objectTwo);
-        return ResponseEntity.ok(result);
+    private final CharactersService charactersService;
+
+    @PostMapping("/string/get/count/characters")
+    public ResponseEntity<Map<Character, Integer>> getCountCharacters(
+            @RequestParam(value = "text")
+            @NotBlank(message = "Must not be empty")
+            @Size(max = 5000,message = "The text is very large")
+            String text
+    ) {
+        return ResponseEntity.ok(charactersService.getCountCharacters(text));
     }
 
-    @PostMapping("/string/characters/get/count/{characters}")
-    public ResponseEntity<CountCharactersObject> getCountCharacter(@PathVariable String characters) {
-        CountCharactersObject result = CountCharactersObject.builder().character(characters).count((short) 5).build();
+    @PostMapping("/string/get/count/character")
+    public ResponseEntity<Map<Character, Integer>> getCountCharacter(
+            @RequestParam(value = "text")
+            @NotBlank(message = "Must not be empty")
+            @Size(max = 5000,message = "The text is very large")
+            String text,
+            @RequestParam("character") Character characters
+    ) {
+        Map<Character, Integer> result = new HashMap<>();
+        result.put(characters, charactersService.getCountCharacter(text, characters));
         return ResponseEntity.ok(result);
     }
 }
